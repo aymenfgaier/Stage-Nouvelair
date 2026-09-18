@@ -1,0 +1,29 @@
+%% Sprint 2 - Modelisation ML : Diagramme de classes (simplifie)
+classDiagram
+    class Vol {
+        +string acType
+        +float dureePrevue
+        +float tripFuel
+        +float taxiFuel
+    }
+
+    class ModeleML {
+        +string cible
+        +entrainer(donnees)
+        +predire(vol) float
+    }
+
+    class Prediction {
+        +float fuelPredit
+        +float ecart
+    }
+
+    class ScoreAnomalie {
+        +string acRegistration
+        +float scoreDerive
+        +bool alerte
+    }
+
+    Vol --> Prediction : est predit
+    ModeleML --> Prediction : genere
+    ModeleML --> ScoreAnomalie : detecte

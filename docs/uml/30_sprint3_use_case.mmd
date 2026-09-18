@@ -1,0 +1,35 @@
+%% Sprint 3 - Dashboard, interface et integration : Diagramme de cas d'utilisation
+%% Cadres distincts : acteurs = rectangles, cas d'utilisation = ellipses (stadium)
+flowchart LR
+    classDef actor fill:#dbe4ea,stroke:#33475b,stroke-width:2px,color:#1c2430;
+    classDef usecase fill:#ffffff,stroke:#1f5f6b,stroke-width:1.5px,color:#1c2430;
+
+    Utilisateur["Utilisateur"]:::actor
+    Dispatcher["Dispatcher / Chef de base"]:::actor
+    Analyste["Analyste Data"]:::actor
+    Dispatcher -.->|specialise| Utilisateur
+    Analyste -.->|specialise| Utilisateur
+
+    subgraph SYS["Module Dashboard & Interface"]
+        UC0(["Consulter le tableau de bord (lecture seule)"]):::usecase
+        UCh(["Rechercher un vol dans l'historique"]):::usecase
+        UCa(["Consulter les alertes de derive recues"]):::usecase
+        UC1(["Saisir les donnees d'un vol a venir"]):::usecase
+        UC2(["Obtenir une estimation de consommation"]):::usecase
+        UC3(["Consulter les recommandations (fuel optimal, cost index)"]):::usecase
+        UC4(["Consulter le tableau de bord Carburant & Avion"]):::usecase
+        UC5(["Consulter le tableau de bord Reseau & Routes"]):::usecase
+        UC6(["Consulter le tableau de bord Operationnel & Predictif"]):::usecase
+        UC7(["Recevoir une alerte de derive"]):::usecase
+    end
+
+    Utilisateur --> UC0
+    Utilisateur --> UCh
+    Utilisateur --> UCa
+    Dispatcher --> UC1
+    UC1 -.include.-> UC2
+    UC2 -.include.-> UC3
+    Dispatcher --> UC6
+    Analyste --> UC4
+    Analyste --> UC5
+    UC6 -.include.-> UC7

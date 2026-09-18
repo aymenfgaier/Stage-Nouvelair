@@ -1,0 +1,37 @@
+%% Diagramme de cas d'utilisation general - Plateforme d'optimisation de la consommation de fuel
+%% Cadres distincts : acteurs = rectangles, cas d'utilisation = ellipses (stadium)
+%% Niveau "taches principales" : pas de sous-etapes detaillees (voir diagrammes par sprint pour le detail)
+flowchart LR
+    classDef actor fill:#dbe4ea,stroke:#33475b,stroke-width:2px,color:#1c2430;
+    classDef usecase fill:#ffffff,stroke:#1f5f6b,stroke-width:1.5px,color:#1c2430;
+
+    Analyste["Analyste Data"]:::actor
+    DataScientist["Data Scientist"]:::actor
+    Dispatcher["Dispatcher / Chef de base"]:::actor
+    Admin["Administrateur"]:::actor
+
+    subgraph SYS["Plateforme d'optimisation fuel"]
+        UC1(["Importer un fichier de vols"]):::usecase
+        UC2(["Nettoyer et centraliser les données"]):::usecase
+        UC3(["Consulter le tableau de bord BI"]):::usecase
+        UC4(["Entraîner le modèle de prédiction"]):::usecase
+        UC5(["Évaluer le modèle"]):::usecase
+        UC6(["Détecter les dérives (anomalies)"]):::usecase
+        UC7(["Prédire la consommation d'un vol"]):::usecase
+        UC8(["Lancer la prédiction automatique"]):::usecase
+        UC9(["Administrer la plateforme"]):::usecase
+    end
+
+    Analyste --> UC1
+    UC1 -.include.-> UC2
+    Analyste --> UC3
+
+    DataScientist --> UC4
+    UC4 -.include.-> UC5
+    DataScientist --> UC6
+
+    Dispatcher --> UC7
+    Dispatcher --> UC8
+    Dispatcher --> UC3
+
+    Admin --> UC9

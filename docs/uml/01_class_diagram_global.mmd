@@ -1,0 +1,125 @@
+%% Diagramme de classes general - Plateforme d'optimisation de la consommation de fuel
+classDiagram
+    class Utilisateur {
+        +int id
+        +string nom
+        +string email
+        +Role role
+        +authentifier()
+    }
+    class Role {
+        <<enumeration>>
+        ADMIN
+        ANALYSTE
+        DATA_SCIENTIST
+        DISPATCHER
+    }
+    Utilisateur --> Role
+
+    class Avion {
+        +string immatriculation
+        +string type
+        +float scoreFuelMoyen
+    }
+
+    class Route {
+        +string origineICAO
+        +string destinationICAO
+        +float distanceOrthodromique
+        +float consommationMoyenne
+    }
+
+    class Vol {
+        +string flightId
+        +date dateOperation
+        +string phaseVol
+        +float blockOff
+        +float blockOn
+        +float tripFuel
+        +float taxiFuel
+        +float fuelPlanifie
+        +float fuelReel
+        +float ecartFuel
+        +int pax
+        +float dureeVol
+        +float retard
+        +calculerEcartFuel()
+    }
+    Vol "many" --> "1" Avion
+    Vol "many" --> "1" Route
+
+    class ServiceImport {
+        +importerCSV(fichier)
+        +nettoyerDataset(df)
+        +chargerEnBase(df)
+    }
+
+    class ServicePrediction {
+        +predire(vol) Prediction
+        +entrainerModele(phase, data)
+        +evaluerModele(modele, testSet)
+    }
+
+    class ModeleML {
+        <<abstract>>
+        +string phaseVol
+        +fit(X, y)
+        +predict(X)
+    }
+    class RegressionLineaire
+    class GradientBoosting
+    class IsolationForest
+    ModeleML <|-- RegressionLineaire
+    ModeleML <|-- GradientBoosting
+    ModeleML <|-- IsolationForest
+    ServicePrediction --> ModeleML
+
+    class Prediction {
+        +string flightId
+        +string phaseVol
+        +float consommationPrevue
+        +float intervalleConfiance
+        +datetime dateCalcul
+    }
+    Vol "1" --> "many" Prediction
+
+    class ScoreAnomalie {
+        +string immatriculation
+        +date periode
+        +float score
+        +bool alerte
+    }
+    Avion "1" --> "many" ScoreAnomalie
+
+    class ServiceExplicabilite {
+        +expliquer(prediction) ContributionsSHAP
+    }
+    class ContributionsSHAP {
+        +dict contributionsParVariable
+    }
+    ServiceExplicabilite --> ContributionsSHAP
+
+    class ServiceRecommandation {
+        +genererRecommandation(vol) Recommandation
+    }
+    class Recommandation {
+        +string flightId
+        +float carburantOptimalPropose
+        +string ajustementCostIndex
+        +string messageAction
+    }
+    ServiceRecommandation --> Recommandation
+
+    class ServiceDashboardBI {
+        +genererKPIFlotte()
+        +genererKPIRoute()
+        +genererAlertesDerive()
+    }
+
+    ServiceImport --> Vol
+    ServicePrediction --> Prediction
+    ServicePrediction --> ScoreAnomalie
+    ServiceExplicabilite --> Prediction
+    ServiceRecommandation --> Prediction
+    ServiceDashboardBI --> Vol
+    ServiceDashboardBI --> ScoreAnomalie

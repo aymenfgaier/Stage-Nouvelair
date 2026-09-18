@@ -1,0 +1,23 @@
+%% Sprint 2 - Diagramme de sequence : Entrainement et evaluation d'un modele par phase de vol
+sequenceDiagram
+    actor DS as Data Scientist
+    participant UI as Page Entrainement (Streamlit)
+    participant SP as ServicePrediction
+    participant ML as ModeleML (phase)
+    participant SHAP as ServiceExplicabilite
+    participant DB as SQLite (models_metadata, predictions)
+
+    DS->>UI: Choisit la phase de vol (ex. Cruise)
+    UI->>SP: entrainerModele(phase, datasetTrain)
+    SP->>ML: fit(X_train, y_train)
+    ML-->>SP: modele entraine
+    SP->>ML: predict(X_test)
+    ML-->>SP: y_pred
+    SP->>SP: calculerMetriques(y_test, y_pred)
+    SP->>SP: comparerBaseline(metriques)
+    SP->>SHAP: expliquer(modele, X_test)
+    SHAP-->>SP: contributions par variable
+    SP->>DB: sauvegarderModele(metriques, params)
+    DB-->>SP: OK
+    SP-->>UI: rapport de performance + SHAP
+    UI-->>DS: Affiche MAE/RMSE/R2 et feature importance

@@ -1,0 +1,33 @@
+%% Sprint 1 - Centralisation des donnees et nettoyage : Diagramme de cas d'utilisation
+%% Cadres distincts : acteurs = rectangles, cas d'utilisation = ellipses (stadium)
+flowchart LR
+    classDef actor fill:#dbe4ea,stroke:#33475b,stroke-width:2px,color:#1c2430;
+    classDef usecase fill:#ffffff,stroke:#1f5f6b,stroke-width:1.5px,color:#1c2430;
+
+    Utilisateur["Utilisateur"]:::actor
+    Analyste["Analyste Data"]:::actor
+    Analyste -.->|specialise| Utilisateur
+
+    subgraph SYS["Module Centralisation des donnees"]
+        UC0(["Consulter le dataset centralise (lecture seule)"]):::usecase
+        UCr(["Rechercher un vol par immatriculation ou route"]):::usecase
+        UCe(["Exporter un extrait des donnees"]):::usecase
+        UC1(["Importer un fichier de vols (CSV)"]):::usecase
+        UC2(["Detecter et exclure les vols invalides"]):::usecase
+        UC3(["Traiter les valeurs aberrantes (> 99.5e centile)"]):::usecase
+        UC4(["Imputer les valeurs manquantes"]):::usecase
+        UC5(["Normaliser les dates et calculer les variables derivees"]):::usecase
+        UC6(["Charger le dataset propre en base"]):::usecase
+        UC7(["Visualiser le rapport de qualite des donnees"]):::usecase
+    end
+
+    Utilisateur --> UC0
+    Utilisateur --> UCr
+    UC0 -.include.-> UCe
+    Analyste --> UC1
+    UC1 -.include.-> UC2
+    UC1 -.include.-> UC3
+    UC1 -.include.-> UC4
+    UC1 -.include.-> UC5
+    UC5 -.include.-> UC6
+    Analyste --> UC7

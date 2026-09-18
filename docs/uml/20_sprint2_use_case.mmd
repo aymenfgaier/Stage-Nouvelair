@@ -1,0 +1,27 @@
+%% Sprint 2 - Modelisation ML : Diagramme de cas d'utilisation
+%% Reflete l'implementation finale : un seul modele (Fuel reel total), pas de modeles par phase.
+%% Cadres distincts : acteurs = rectangles, cas d'utilisation = ellipses (stadium)
+flowchart LR
+    classDef actor fill:#dbe4ea,stroke:#33475b,stroke-width:2px,color:#1c2430;
+    classDef usecase fill:#ffffff,stroke:#1f5f6b,stroke-width:1.5px,color:#1c2430;
+
+    Utilisateur["Utilisateur"]:::actor
+    DS["Data Scientist"]:::actor
+    DS -.->|spécialise| Utilisateur
+
+    subgraph SYS["Module Modélisation ML (Fuel réel total)"]
+        UC0(["Consulter les hyperparamètres d'entraînement"]):::usecase
+        UC1(["Entraîner le modèle (baseline, régression linéaire, XGBoost)"]):::usecase
+        UC2(["Évaluer le modèle (MAE, RMSE, R2, MAPE) face à la baseline"]):::usecase
+        UC3(["Analyser l'importance des variables (SHAP)"]):::usecase
+        UC4(["Détecter les dérives par immatriculation (Isolation Forest)"]):::usecase
+        UC5(["Consulter les résultats de modélisation"]):::usecase
+    end
+
+    Utilisateur --> UC0
+    Utilisateur --> UC5
+
+    DS --> UC1
+    UC1 -.include.-> UC2
+    UC1 -.include.-> UC3
+    DS --> UC4

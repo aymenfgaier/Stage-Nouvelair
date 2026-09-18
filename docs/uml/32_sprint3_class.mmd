@@ -1,0 +1,26 @@
+%% Sprint 3 - Dashboard & recommandations : Diagramme de classes (simplifie)
+classDiagram
+    class Prediction {
+        +float fuelPredit
+        +float fuelPlanifie
+        +float ecartVsPlan
+    }
+
+    class Recommandation {
+        +float fuelOptimalPropose
+        +string message
+    }
+
+    class FuelScore {
+        +float score
+    }
+
+    class Dashboard {
+        +afficherKPI()
+        +afficherAlertes()
+    }
+
+    Prediction --> Recommandation : genere
+    Prediction --> FuelScore : calcule
+    Dashboard --> Prediction : affiche
+    Dashboard --> Recommandation : affiche

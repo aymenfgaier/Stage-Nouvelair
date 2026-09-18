@@ -1,0 +1,56 @@
+%% Sprint 1 - Centralisation des donnees : Diagramme de classes
+classDiagram
+    class Vol {
+        +string flightId
+        +date dateOperation
+        +string acType
+        +string depIcao
+        +string destIcao
+        +float tripFuel
+        +float taxiFuel
+        +float fuelReelConsomme
+        +float ecartCarburant
+        +int pax
+        +float dureePrevueMin
+        +int mois
+        +int jourSemaine
+    }
+
+    class CleaningReport {
+        +int lignesSource
+        +int lignesTripFuelInvalide
+        +int lignesOutliersPlafonnees
+        +int passagersImputes
+        +int lignesFuelReelInvalide
+        +int lignesFinales
+    }
+
+    class ServiceImport {
+        +loadRawCsv(fichier) DataFrame
+        +cleanDataset(df) (DataFrame, CleaningReport)
+        +loadToSqlite(df)
+    }
+
+    class SourceType {
+        <<enumeration>>
+        FICHIER
+        DATABASE
+    }
+
+    class DataSourceResult {
+        +SourceType sourceType
+        +DataFrame df
+        +CleaningReport report
+    }
+
+    class ServiceDataSource {
+        +loadFromFile(fichier) DataSourceResult
+        +loadFromDatabase() DataSourceResult
+    }
+
+    ServiceImport --> Vol : produit
+    ServiceImport --> CleaningReport : produit
+    ServiceDataSource --> DataSourceResult
+    DataSourceResult --> SourceType
+    DataSourceResult --> CleaningReport
+    ServiceDataSource --> ServiceImport : utilise

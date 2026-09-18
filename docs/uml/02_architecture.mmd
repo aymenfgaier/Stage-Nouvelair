@@ -1,0 +1,55 @@
+%% Diagramme d'architecture systeme - Plateforme d'optimisation fuel (Streamlit + SQLite)
+flowchart TB
+    subgraph PRES["Couche Presentation (Streamlit)"]
+        P1["Page Import & Centralisation"]
+        P2["Page Dashboard BI / KPI"]
+        P3["Page Prediction & Simulation"]
+        P4["Page Anomalies & Alertes"]
+    end
+
+    subgraph MET["Couche Metier / Services (Python)"]
+        S1["ServiceImport (ETL + nettoyage)"]
+        S2["ServicePrediction"]
+        S3["ServiceAnomalie (Isolation Forest)"]
+        S4["ServiceExplicabilite (SHAP)"]
+        S5["ServiceRecommandation"]
+    end
+
+    subgraph ML["Pipeline Machine Learning"]
+        M1["Regression lineaire (Taxi)"]
+        M2["Gradient Boosting (Climb / Cruise / Descent)"]
+        M3["Isolation Forest (derive par immatriculation)"]
+    end
+
+    subgraph DATA["Couche Donnees"]
+        D1[("SQLite - table flights")]
+        D2[("SQLite - table predictions")]
+        D3[("SQLite - table anomaly_scores")]
+        D4[("SQLite - table models_metadata")]
+        D5[("Fichiers sources: CSV Nouvelair")]
+    end
+
+    P1 --> S1
+    S1 --> D5
+    S1 --> D1
+
+    P2 --> D1
+    P2 --> D2
+    P2 --> D3
+
+    P3 --> S2
+    S2 --> ML
+    ML --> D2
+    S2 --> S4
+    S4 --> D2
+
+    P4 --> S3
+    S3 --> ML
+    S3 --> D3
+
+    P3 --> S5
+    S5 --> D2
+    S5 --> D1
+
+    S2 --> D4
+    S3 --> D4

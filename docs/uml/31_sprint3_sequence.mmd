@@ -1,0 +1,23 @@
+%% Sprint 3 - Diagramme de sequence : Estimation fuel a partir de donnees d'entree + recommandation
+sequenceDiagram
+    actor D as Dispatcher
+    participant UI as Page Prediction (Streamlit)
+    participant SP as ServicePrediction
+    participant ML as ModeleML (par phase)
+    participant SA as ServiceAnomalie
+    participant SR as ServiceRecommandation
+    participant DB as SQLite
+
+    D->>UI: Saisit les donnees du vol (route, TOW, meteo, avion)
+    UI->>SP: predire(volEntree)
+    SP->>ML: predict(features par phase)
+    ML-->>SP: consommation estimee par phase
+    SP->>SA: verifierDerive(immatriculation)
+    SA->>DB: lireHistorique(immatriculation)
+    DB-->>SA: historique consommation
+    SA-->>SP: scoreAnomalie
+    SP->>SR: genererRecommandation(prediction, scoreAnomalie)
+    SR-->>SP: recommandation (fuel optimal, cost index)
+    SP->>DB: enregistrerPrediction(volEntree, resultat)
+    SP-->>UI: estimation + recommandation + alerte eventuelle
+    UI-->>D: Affiche consommation prevue, recommandation et alerte

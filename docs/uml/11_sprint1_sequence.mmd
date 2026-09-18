@@ -1,0 +1,22 @@
+%% Sprint 1 - Diagramme de sequence : Import et nettoyage d'un fichier de vols
+sequenceDiagram
+    actor A as Analyste
+    participant UI as Page Import (Streamlit)
+    participant SI as ServiceImport
+    participant PD as Pandas (nettoyage)
+    participant DB as SQLite (flights)
+
+    A->>UI: Depose le fichier SetNouvelair.csv
+    UI->>SI: importerCSV(fichier)
+    SI->>PD: lireCSV(separateur point-virgule, decimale virgule)
+    PD-->>SI: DataFrame brut (45104 lignes)
+    SI->>PD: exclure(TripFuel non positif)
+    SI->>PD: traiterOutliers(percentile=99.5)
+    SI->>PD: imputerPassagers()
+    SI->>PD: normaliserDates()
+    SI->>PD: calculerVariablesDerivees()
+    PD-->>SI: DataFrame nettoye
+    SI->>DB: chargerEnBase(DataFrame nettoye)
+    DB-->>SI: OK (n lignes inserees)
+    SI-->>UI: rapportQualite(avant/apres)
+    UI-->>A: Affiche resume + apercu du dataset centralise
